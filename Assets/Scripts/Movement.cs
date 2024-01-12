@@ -5,13 +5,16 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     Rigidbody rb; 
+    AudioSource myAudioSource;
 
     [SerializeField] float thrustPower = 1000f ;
     [SerializeField] float rotateForce = 200f ;
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        myAudioSource = GetComponent<AudioSource>();
     }
 
     
@@ -23,9 +26,17 @@ public class Movement : MonoBehaviour
 
     void ProcessThrust()
     {
+        
             if(Input.GetKey(KeyCode.Space))
             {
                 rb.AddRelativeForce(Vector3.up * thrustPower * Time.deltaTime);
+
+                if(!myAudioSource.isPlaying){
+                    myAudioSource.Play();
+                }
+            }else
+            {
+                myAudioSource.Stop();
             }
     }
 
