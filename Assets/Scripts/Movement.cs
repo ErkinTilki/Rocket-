@@ -1,15 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
-    Rigidbody rb; 
-    AudioSource myAudioSource;
 
     [SerializeField] float thrustPower = 1000f ;
     [SerializeField] float rotateForce = 200f ;
-    
+    [SerializeField] AudioClip mainEngine;
+
+    [SerializeField] ParticleSystem leftRocketParticles;
+    [SerializeField] ParticleSystem middleRocketParticles1;
+    [SerializeField] ParticleSystem middleRocketParticles2;
+    [SerializeField] ParticleSystem rightRocketParticles;
+
+    Rigidbody rb; 
+    AudioSource myAudioSource;
 
     void Start()
     {
@@ -28,13 +35,10 @@ public class Movement : MonoBehaviour
     {
         
             if(Input.GetKey(KeyCode.Space))
-            {
-                rb.AddRelativeForce(Vector3.up * thrustPower * Time.deltaTime);
-
-                if(!myAudioSource.isPlaying){
-                    myAudioSource.Play();
-                }
-            }else
+        {
+            StartThrusting();
+        }
+        else
             {
                 myAudioSource.Stop();
             }
@@ -44,19 +48,54 @@ public class Movement : MonoBehaviour
     {
             if(Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(rotateForce);
+            RotateLeft();
         }
         else if(Input.GetKey(KeyCode.D))
         {
-                ApplyRotation(-rotateForce);
+            RotateRight();
         }
     }
 
-     void ApplyRotation(float rotationThisFrame)
+    void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * thrustPower * Time.deltaTime);
+        
+        StartAllRocketParticles();
+
+        if (!myAudioSource.isPlaying)
+        {
+            myAudioSource.PlayOneShot(mainEngine);
+        }
+    }
+
+
+    void RotateLeft()
+    {
+        rightRocketParticles.Play();
+        leftRocketParticles.Stop();
+        ApplyRotation(rotateForce);
+    }
+
+    void RotateRight()
+    {
+        leftRocketParticles.Play();
+        rightRocketParticles.Stop();
+        ApplyRotation(-rotateForce);
+    }
+    
+    void ApplyRotation(float rotationThisFrame)
     {
         rb.freezeRotation = true;
         transform.Rotate(Vector3.forward * rotationThisFrame * Time.deltaTime);
         rb.freezeRotation = false;
+    }
+
+    void StartAllRocketParticles()
+    {
+        leftRocketParticles.Play();
+        middleRocketParticles1.Play();
+        middleRocketParticles2.Play();
+        rightRocketParticles.Play();
     }
 }
  
