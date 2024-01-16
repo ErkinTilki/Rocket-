@@ -7,7 +7,7 @@ public class CollisionHandler : MonoBehaviour
 {   
     [SerializeField] float crashDelay = 2f;
     [SerializeField] float finishDelay = 1f;
-    [SerializeField] AudioClip crashSFXMain, finishSFXMain;
+    [SerializeField] AudioClip crashSFXMain;
     [SerializeField] ParticleSystem crashParticles;
 
     Movement movement;
@@ -37,13 +37,9 @@ public class CollisionHandler : MonoBehaviour
         switch (other.gameObject.tag)
             {
             case "Friendly":
-                Debug.Log("You Have Landed.");
                 break;
             case "Finish":
                 StartFinishSequence();
-                break;
-            case "Fuel":
-                Debug.Log("You Have Fuel.");
                 break;
             default:
                 StartCrashSequence();
@@ -64,10 +60,8 @@ public class CollisionHandler : MonoBehaviour
 
     void StartFinishSequence()
     {
-        isTransitioning = true;
         myAudioSource.Stop();
         movement.enabled = false;
-        myAudioSource.PlayOneShot(finishSFXMain);
         Invoke("LoadNextLevel",finishDelay);
     }
 
